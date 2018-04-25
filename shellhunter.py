@@ -7,7 +7,10 @@ import detect
 def process_list():
     proc1 = subprocess.Popen(['ps', 'aux'], stdout=subprocess.PIPE)
     out = proc1.communicate()[0]
-    print(out)
+    proc1.stdout.close()
+    out = out.decode().split('\n')
+    for proc in out:
+        print(proc)
 
 
 def menu():
@@ -16,13 +19,14 @@ def menu():
         print("1) View running processes")
         print("2) Dump a process memory")
         print("3) Check dump for shellcode")
+        print("4) Exit")
         choice = input("> ")
 
         if '1' in choice:
             process_list()
         elif '2' in choice:
             print("What process? (pid)")
-            pid = input("> ")
+            pid = int(input("> "))
             dumper.start(pid)
         elif '3' in choice:
             print("What dumpfile?")
@@ -31,6 +35,8 @@ def menu():
             print(detect.shellcodes.keys())
             shellcode = input("> ")
             detect.check_match(dump, shellcode)
+        elif '4' in choice:
+            return
         else:
             print("Invalid option")
         print("")
