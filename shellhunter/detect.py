@@ -54,12 +54,24 @@ def check_match(dump, shell):
     if shell not in shellcodes:
         print("No known sample of {} shellcode".format(e))
         return
-    # print(sample)    
-    # return
+   
+    total = 0
+    matched = 0 
+    matches = []
     chunks = chunk_gen(shellcodes[shell])
     for c in chunks:
+        total += 1
         if c in sample:
-            print("MATCHED", c)
+            matched += 1
+            matches.append(c)
+    matches = sorted(matches, key=len)[::-1]
+    print("-"*40)
+    print("Matched {}% of sample in dump".format((matched/total)*100))
+    print("-"*40)
+    print("5 Longest matches were")
+    print("-"*40)
+    for i in range(5):
+        print(matches[i])
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
