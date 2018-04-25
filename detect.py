@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import argparse
+
 # x84-64 execve /bin/sh
 # http://shell-storm.org/shellcode/files/shellcode-806.php
 a = "\x31\xc0\x48\xbb\xd1\x9d\x96\x91\xd0\x8c\x97\xff\x48\xf7\xdb\x53\x54\x5f\x99\x52\x57\x54\x5e\xb0\x3b\x0f\x05"
@@ -36,8 +38,17 @@ def test_a(dump):
     f = open(dump, 'rb')
     sample = f.read()
     f.close()
+    print(sample)
 
     chunks = zip(*[iter(a)]*3)
+    chunks = [''.join(c) for c in chunks]
     for c in chunks:
-        print(c)
+        if c.encode('utf-8') in sample:
+            print("MATCHED", c.encode('utf-8'))
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("dumpfile", help="What file has the memory dump?", type=str)
+    args = parser.parse_args()
+    test_a(args.dumpfile)    
     

@@ -22,7 +22,6 @@ def dump(process, pid):
             start = int(start, 16)
             end = int(end, 16)
             dumpfile.write(read_memory(start, end, process))
-
     mapfile.close()
     dumpfile.close()
 
