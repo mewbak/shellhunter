@@ -36,6 +36,12 @@ c = (
 
 shellcodes = {'execve_bin/sh': a, 'tcp_bin': b, 'tcp_reverse': c}
 
+def chunk_gen(sample):
+    length = len(sample)
+    for i in range(length):
+        for j in range(i + 2, length + 1):
+            yield(sample[i:j]) 
+
 def check_match(dump, shell):
     try:
         f = open(dump, 'rb')
@@ -45,17 +51,13 @@ def check_match(dump, shell):
     sample = f.read()
     f.close()
 
-    try:
-        chunks = zip(*[iter(shellcodes[shell])]*3)
-    except KeyError as e:
+    if shell not in shellcodes:
         print("No known sample of {} shellcode".format(e))
-        return 
-    chunks = [''.join(c) for c in chunks]
-    if len(shellcodes[shell])%3:
-        chunks.append(a[(len(a)//3)*3:])
-
+        return
+    
+    chunks = chunk_gen(shellcodes[shell])
     for c in chunks:
-        if c.encode('utf-8') in sample:
+        if c.decode('utf-8') in sample:
             print("MATCHED", c.encode('utf-8'))
 
 if __name__ == "__main__":
