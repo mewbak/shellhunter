@@ -34,16 +34,18 @@ c = (
     "\x5f\x6a\x3b\x58\x0f\x05"
 )
 
-def check_match(dump, shellcode):
+shellcodes = {'a': a, 'b': b, 'c': c}
+
+def check_match(dump, shell):
     f = open(dump, 'rb')
     sample = f.read()
     f.close()
 
-    chunks = zip(*[iter(shellcode)]*3)
+    chunks = zip(*[iter(shellcodes[shell])]*3)
     chunks = [''.join(c) for c in chunks]
-    if len(a)%3:
+    if len(shellcodes[shell])%3:
         chunks.append(a[(len(a)//3)*3:])
-        
+
     for c in chunks:
         if c.encode('utf-8') in sample:
             print("MATCHED", c.encode('utf-8'))
@@ -51,6 +53,7 @@ def check_match(dump, shellcode):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("dumpfile", help="What file has the memory dump?", type=str)
+    parser.add_argument("shellcode", help="What shellcode to match?", type=str)
     args = parser.parse_args()
-    check_match(args.dumpfile, a)
+    check_match(args.dumpfile, args.shellcode)
     
