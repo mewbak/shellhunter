@@ -34,14 +34,16 @@ c = (
     "\x5f\x6a\x3b\x58\x0f\x05"
 )
 
-def test_a(dump):
+def check_match(dump, shellcode):
     f = open(dump, 'rb')
     sample = f.read()
     f.close()
-    print(sample)
 
-    chunks = zip(*[iter(a)]*3)
+    chunks = zip(*[iter(shellcode)]*3)
     chunks = [''.join(c) for c in chunks]
+    if len(a)%3:
+        chunks.append(a[(len(a)//3)*3:])
+        
     for c in chunks:
         if c.encode('utf-8') in sample:
             print("MATCHED", c.encode('utf-8'))
@@ -50,5 +52,5 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("dumpfile", help="What file has the memory dump?", type=str)
     args = parser.parse_args()
-    test_a(args.dumpfile)    
+    check_match(args.dumpfile, a)
     
