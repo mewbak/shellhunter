@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import subprocess
-
+from shellhunter import dumper
+from shellhunter import detect
 
 def process_list():
     proc1 = subprocess.Popen(['ps', 'aux'], stdout=subprocess.PIPE)
