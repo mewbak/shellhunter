@@ -37,11 +37,19 @@ c = (
 shellcodes = {'execve_bin/sh': a, 'tcp_bin': b, 'tcp_reverse': c}
 
 def check_match(dump, shell):
-    f = open(dump, 'rb')
+    try:
+        f = open(dump, 'rb')
+    except FileNotFoundError as e:
+        print(e)
+        return
     sample = f.read()
     f.close()
 
-    chunks = zip(*[iter(shellcodes[shell])]*3)
+    try:
+        chunks = zip(*[iter(shellcodes[shell])]*3)
+    except KeyError as e:
+        print("No known sample of {} shellcode".format(e))
+        return 
     chunks = [''.join(c) for c in chunks]
     if len(shellcodes[shell])%3:
         chunks.append(a[(len(a)//3)*3:])

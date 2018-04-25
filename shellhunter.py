@@ -32,7 +32,7 @@ def menu():
             print("What dumpfile?")
             dump = input("> ")
             print("What shellcode?")
-            print(detect.shellcodes.keys())
+            print('  '.join(detect.shellcodes.keys()))
             shellcode = input("> ")
             detect.check_match(dump, shellcode)
         elif '4' in choice:
