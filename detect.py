@@ -34,7 +34,7 @@ c = (
     "\x5f\x6a\x3b\x58\x0f\x05"
 )
 
-shellcodes = {'a': a, 'b': b, 'c': c}
+shellcodes = {'execve_bin/sh': a, 'tcp_bin': b, 'tcp_reverse': c}
 
 def check_match(dump, shell):
     f = open(dump, 'rb')

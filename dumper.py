@@ -25,6 +25,8 @@ def dump(process, pid):
     mapfile.close()
     dumpfile.close()
 
+    print("Dump written to {}.dmp".format(str(pid)))
+
 def start(pid):
     # need to attach to the process with ptrace before you can read it's proc/$pid/maps
     # or be root I guess
