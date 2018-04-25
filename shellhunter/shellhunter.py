@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 import subprocess
-import dumper
-import detect
+
 
 def process_list():
     proc1 = subprocess.Popen(['ps', 'aux'], stdout=subprocess.PIPE)
