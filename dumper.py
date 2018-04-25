@@ -33,7 +33,11 @@ def start(pid):
     # https://unix.stackexchange.com/questions/6301/how-do-i-read-from-proc-pid-mem-under-linux
     # http://lkml.iu.edu/hypermail/linux/kernel/0505.0/0858.html 
     dbg = PtraceDebugger()
-    process = dbg.addProcess(pid, False)
+    try:
+        process = dbg.addProcess(pid, False)
+    except:
+        print("Could not attach to process {}".format(pid))
+        return
     dump(process, pid)
     dbg.quit()
 
