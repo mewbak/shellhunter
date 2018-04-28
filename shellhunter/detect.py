@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import operator
 
 # TODO: fingerprint unknown shellcode automagically 
 
@@ -67,7 +68,7 @@ def check_match(dump, shell):
             matched += 1
             matches.append(c)
     matches = sorted(matches, key=len)[::-1]
-    print("-"*40)
+    print("="*40)
     print("Matched {}% of sample in dump".format((matched/total)*100))
     print("-"*40)
     print("5 Longest matches were")
@@ -75,10 +76,38 @@ def check_match(dump, shell):
     for i in range(5):
         print(matches[i])
 
+def fingerprint(dump):
+    try:
+        f = open(dump, 'rb')
+    except FileNotFoundError as e:
+        print(e)
+        return
+    sample = f.read()
+    f.close()
+
+    guesses = {}
+    for shell, guess in shellcodes.items():
+        total = 0
+        matched = 0
+        chunks = chunk_gen(shellcodes[shell])
+        for c in chunks:
+            total += 1
+            if c in sample:
+                matched += 1
+        guesses[shell] = (matched/total)*100
+    guesses = sorted(guesses.items(), key=operator.itemgetter(1), reverse=True)
+    print("="*40)
+    print("Best matches are")
+    print("-"*40)
+    print("Shellcode  \t\t\t   Match")
+    print("-"*40)
+    for shell, match in guesses:
+        print("{} \t\t{:>15.2f}%".format(shell, match))
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("dumpfile", help="What file has the memory dump?", type=str)
     parser.add_argument("shellcode", help="What shellcode to match?", type=str)
     args = parser.parse_args()
     check_match(args.dumpfile, args.shellcode)
-    
+    fingerprint(args.dumpfile)

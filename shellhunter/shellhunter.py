@@ -27,7 +27,8 @@ def menu():
         print("1) View running processes")
         print("2) Dump a process memory")
         print("3) Check dump for shellcode")
-        print("4) Exit")
+        print("4) Fingerprint for unknown shellcode")
+        print("5) Exit")
         choice = input("> ")
 
         if '1' in choice:
@@ -44,6 +45,10 @@ def menu():
             shellcode = input("> ")
             detect.check_match(dump, shellcode)
         elif '4' in choice:
+            print("What dumpfile?")
+            dump = input("> ")
+            detect.fingerprint(dump)
+        elif '5' in choice:
             return
         else:
             print("Invalid option")
