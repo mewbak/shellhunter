@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+PYTHON_VERSION: 3.5
+
+Main menu
+"""
 
 import subprocess
 import dumper
@@ -12,9 +17,8 @@ def process_list():
     for proc in out:
         print(proc)
 
-
 def menu():
-    print("""
+    print(r"""
   _________.__           .__  .__  .__                  __                
  /   _____/|  |__   ____ |  | |  | |  |__  __ __  _____/  |_  ___________ 
  \_____  \ |  |  \_/ __ \|  | |  | |  |  \|  |  \/    \   __\/ __ \_  __ \\
@@ -53,7 +57,6 @@ def menu():
         else:
             print("Invalid option")
         print("")
-
 
 if __name__ == "__main__":
     menu()

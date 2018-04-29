@@ -1,13 +1,22 @@
 #!/usr/bin/env python3
+"""
+PYTHON_VERSION: 3.5
+
+Matches sample of shellcode to memory dump files
+
+shellcodes: dictionary mapping shellcode name to sample
+Can add more samples as byte strings
+"""
 
 import argparse
 import operator
 
-# TODO: fingerprint unknown shellcode automagically 
-
 # x84-64 execve /bin/sh
 # http://shell-storm.org/shellcode/files/shellcode-806.php
-a = b"\x31\xc0\x48\xbb\xd1\x9d\x96\x91\xd0\x8c\x97\xff\x48\xf7\xdb\x53\x54\x5f\x99\x52\x57\x54\x5e\xb0\x3b\x0f\x05"
+a = (
+    b"\x31\xc0\x48\xbb\xd1\x9d\x96\x91\xd0\x8c\x97\xff\x48\xf7\xdb\x53"
+    b"\x54\x5f\x99\x52\x57\x54\x5e\xb0\x3b\x0f\x05"
+)
 
 # x86-64 tcp bind shell port 55555 = 0xd903
 # http://shell-storm.org/shellcode/files/shellcode-858.php
@@ -40,12 +49,19 @@ c = (
 shellcodes = {'execve_bin/sh': a, 'tcp_bind': b, 'tcp_reverse': c}
 
 def chunk_gen(sample):
+    """
+    Generates all contiguous substrings
+    """
     length = len(sample)
     for i in range(length):
         for j in range(i + 2, length + 1):
             yield(sample[i:j]) 
 
 def check_match(dump, shell):
+    """
+    Check how much of sample matches memory dump
+    prints percent match and longest matches
+    """
     try:
         f = open(dump, 'rb')
     except FileNotFoundError as e:
@@ -77,6 +93,9 @@ def check_match(dump, shell):
         print(matches[i])
 
 def fingerprint(dump):
+    """
+    Check all shellcode samples against the dump print percentage matches
+    """
     try:
         f = open(dump, 'rb')
     except FileNotFoundError as e:
@@ -110,4 +129,3 @@ if __name__ == "__main__":
     parser.add_argument("shellcode", help="What shellcode to match?", type=str)
     args = parser.parse_args()
     check_match(args.dumpfile, args.shellcode)
-    fingerprint(args.dumpfile)
